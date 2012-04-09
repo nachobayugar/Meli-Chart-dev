@@ -1,0 +1,52 @@
+<html>
+<head>
+	<title>Graficos</title>
+</head>
+<body onload="JavaScript:timedRefresh(90000)">
+	<script type='text/javascript'>
+		
+		var qsData = document.location.search.substring(1).split ("&");
+		var data = {};
+		var filesQty = 0;
+		var filesNamesArray = new Array();
+		
+		for (var a = 0; a < qsData.length; a++) {
+			var pair = qsData[a].split ("=");
+			var fileName = unescape(pair[1]);
+			data[pair[0]] = fileName;
+			filesQty += 1;
+			filesNamesArray.push(fileName);
+		}
+		
+		var table = document.createElement('table');	
+		table.setAttribute("border","1");
+		table.setAttribute("align","center");
+		table.setAttribute("cellspacing","0");
+		table.setAttribute("cellpadding","0");
+		table.setAttribute("width","100%");
+		
+		for(var i=0; i<filesQty; i++){
+			tableRow = document.createElement('tr');
+			var td;
+			var iframe;
+			td = document.createElement('td');
+			iframe = document.createElement('iframe');
+			iframe.setAttribute("id", "iframe" + i.toString());
+			//iframe.name = "iframe1";
+			iframe.src = "graphicContainer.html?file=" + filesNamesArray[i];
+			iframe.width = "100%";
+			iframe.height = "400";
+			iframe.align = "left";
+			td.appendChild(iframe);
+			tableRow.appendChild(td);
+			
+			table.appendChild(tableRow);
+		}
+		
+		document.getElementsByTagName("body")[0].appendChild(table);
+		
+	</script>
+	
+</body>
+
+</html>

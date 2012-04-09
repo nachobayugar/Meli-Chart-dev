@@ -1,0 +1,72 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<!-- ubicacion de la libreria graficos
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> -->
+		<script src='./dependencies/jQuery/jquery.min.js' type='text/javascript'></script>
+		<script src='./dependencies/highcharts/highcharts.js' type='text/javascript'></script>
+		<script type='text/javascript' src='./dependencies/highcharts/highstock.js'></script>
+		
+		<!-- ubicacion del modulo para exportar datos-->
+		<script type='text/javascript' src='./dependencies/highcharts/exporting.js'></script>
+		<!-- ubicacion del archivo de temas elegido-->
+		<script type='text/javascript' src='./dependencies/highcharts/skins/gray.js'></script>
+		<!-- JS con los datos -->
+		<!--
+		<script type="text/javascript" src="dataHolder.js"></script>
+		<!-- JS para graficar 
+		<script type="text/javascript" src="last_week_comparisson.js"></script>
+		<script type="text/javascript" src="two_weeks_comparisson.js"></script>
+		<script type="text/javascript" src="three_weeks_comparisson.js"></script>
+		<script type="text/javascript" src="four_weeks_comparisson.js"></script>
+		-->
+	</head>
+	<body>
+		<script type='text/javascript'>
+			
+			var qsData = document.location.search.substring(1).split ("&");
+			var data = {};
+			
+			
+			for (var a = 0; a < qsData.length; a++) {
+				var pair = qsData[a].split ("=");
+				data[pair[0]] = unescape(pair[1]);
+			}
+			
+			var s = document.createElement('script');	
+			s.type = 'text/javascript';	
+			s.src = "./projects/" + data.file;
+						
+			var lastWeekComparisson = document.createElement('script');	
+			lastWeekComparisson.type = 'text/javascript';	
+			lastWeekComparisson.src = "last_week_comparisson.js";
+			
+			var twoWeeksComparisson = document.createElement('script');	
+			twoWeeksComparisson.type = 'text/javascript';	
+			twoWeeksComparisson.src = "two_weeks_comparisson.js";
+			
+			var threeWeeksComparisson = document.createElement('script');	
+			threeWeeksComparisson.type = 'text/javascript';	
+			threeWeeksComparisson.src = "three_weeks_comparisson.js";
+			
+			var fourWeeksComparisson = document.createElement('script');	
+			fourWeeksComparisson.type = 'text/javascript';	
+			fourWeeksComparisson.src = "four_weeks_comparisson.js";
+			
+			document.getElementsByTagName("head")[0].appendChild(s);
+			
+			document.getElementsByTagName("head")[0].appendChild (lastWeekComparisson);
+			document.getElementsByTagName("head")[0].appendChild (twoWeeksComparisson);
+			document.getElementsByTagName("head")[0].appendChild (threeWeeksComparisson);
+			document.getElementsByTagName("head")[0].appendChild (fourWeeksComparisson);
+		</script>
+
+		
+		<!-- 3. Add the container -->
+		<div id="container" style="width: 80%; height: 50%; margin: 0 auto"></div>		
+		<p>	<div id="containerTwoWeeksComparisson" style="width: 80%; height: 50%; margin: 0 auto"></div>	</p>
+		<p>	<div id="containerThreeWeeksComparisson" style="width: 80%; height: 50%; margin: 0 auto"></div>	</p>
+		<p>	<div id="containerFourWeeksComparisson" style="width: 80%; height: 50%; margin: 0 auto"></div>	</p>
+	</body>
+</html>
+
