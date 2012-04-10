@@ -107,6 +107,13 @@
 				seriesTypesScript.text = "var seriesTypesFromHtml = '" + dataQString.seriesTypes + "';" ;
 		}
 		
+		var stackingStyleScript = document.createElement('script');	
+		stackingStyleScript.id = "stackingStyleScript";
+		stackingStyleScript.type = 'text/javascript';
+		if(typeof(dataQString.userStacking)!="undefined" && dataQString.userStacking!="undefined" && dataQString.userStacking!=""){
+				stackingStyleScript.text = "var userStacking = '" + dataQString.userStacking + "';" ;
+		}
+		
 		document.getElementsByTagName("head")[0].appendChild(pie);		
 		document.getElementsByTagName("head")[0].appendChild(theme);
 		document.getElementsByTagName("head")[0].appendChild(s);
@@ -117,6 +124,7 @@
 		document.getElementsByTagName("head")[0].appendChild(showLastWeek);
 		document.getElementsByTagName("head")[0].appendChild(indexScript);
 		document.getElementsByTagName("head")[0].appendChild(seriesTypesScript);
+		document.getElementsByTagName("head")[0].appendChild(stackingStyleScript);
 		
 	</script>
 	<!--<script type='text/javascript' id = "LastUpdated">
@@ -140,6 +148,7 @@
 			<td align="center"><input type="button" value="Skies"  onClick="switchStyle('skies')"></input></td>
 			<td align="center"><input type="button" value="MP"  onClick="switchStyle('mp')"></input></td>
 			<td align="center"><input type="button" value="ML"  onClick="switchStyle('ml')"></input></td>
+			<td align="center"><input type="button" value="Gateway"  onClick="switchStyle('gateway')"></input></td>
 			<td align="center"><input type="button" value="Gray"  onClick="switchStyle('gray')"></input></td>
 			<td align="center"><input type="button" value="Dark blue"  onClick="switchStyle('dark-blue')"></input></td>
 			<td align="center"><input type="button" value="Dark green"  onClick="switchStyle('dark-green')"></input></td>
@@ -158,6 +167,10 @@
 			<input type="button" value="Line Chart"  onClick="modifyChartType('line')"></input>
 			<input type="button" value="SpLine Chart"  onClick="modifyChartType('spline')"></input>
 			<input type="button" value="Area Chart"  onClick="modifyChartType('area')"></input>
+		</td>
+		<td align="center">
+			<input type="button" id ="userStacking" value="Overlapped series"  onClick="modifyStacking('overlap')"></input>
+			<input type="button" id ="userStacking" value="Stacked series"  onClick="modifyStacking('normal')"></input>
 		</td>
 	</tr>
 	</table>
@@ -185,8 +198,7 @@
 	</table>
 	
 	
-	<table align="center" id="plainDataTable" border="1" cellspacing="0" cellpadding="0" width="250%" style="visibility: hidden">
-	
+	<table align="center" id="plainDataTable" border="1" cellspacing="0" cellpadding="0" width="750%" style="visibility: hidden">
 	</table>
 	
 	<script language="javascript">
@@ -220,7 +232,7 @@
 				dataQString[pair[0]] = unescape(pair[1]);				
 			}
 
-			url = urlBase + "?file=" + dataQString.file + "&theme=" + styleName +"&showPie=" + dataQString.showPie + "&showTrend=" + dataQString.showTrend +  "&showLastWeek=" + dataQString.showLastWeek + "&index=" + dataQString.index;
+			url = urlBase + "?file=" + dataQString.file + "&theme=" + styleName +"&showPie=" + dataQString.showPie + "&showTrend=" + dataQString.showTrend +  "&showLastWeek=" + dataQString.showLastWeek + "&index=" + dataQString.index+ "&userStacking=" + dataQString.userStacking;
 			window.location.replace(url);
 			return;
 		}
@@ -238,7 +250,7 @@
 				dataQString[pair[0]] = unescape(pair[1]);				
 			}
 
-			url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme + "&showPie=" + parametro + "&showTrend=" + dataQString.showTrend +  "&showLastWeek=" + dataQString.showLastWeek + "&index=" + dataQString.index;
+			url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme + "&showPie=" + parametro + "&showTrend=" + dataQString.showTrend +  "&showLastWeek=" + dataQString.showLastWeek + "&index=" + dataQString.index+ "&userStacking=" + dataQString.userStacking;
 			window.location.replace(url);
 			return;
 		}
@@ -389,12 +401,12 @@
 			
 			if(serie=="trend"){
 				if(document.getElementById("showTrendButton").value == "Show trend"){
-					url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend=Y" +  "&showLastWeek=" + dataQString.showLastWeek + "&userColors=" + dataQString.userColors +  "&index=" + document.getElementById("seriesLabel").selectedIndex;
+					url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend=Y" +  "&showLastWeek=" + dataQString.showLastWeek + "&userColors=" + dataQString.userColors +  "&index=" + document.getElementById("seriesLabel").selectedIndex + "&userStacking=" + dataQString.userStacking;
 					document.getElementById("showTrendButton").value = "Hide trend";
 				}
 				else{
 					//url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.styleName +"&showPie=" + dataQString.showPie + "&showTrend=N" +  "&showLastWeek=" + dataQString.showLastWeek;
-					url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&index=" + dataQString.index + "&seriesTypes=" + dataQString.seriesTypes + "&userColors=" + dataQString.userColors +  "&showLastWeek=" + dataQString.showLastWeek + "&showTrend=N" ;
+					url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&index=" + dataQString.index + "&seriesTypes=" + dataQString.seriesTypes + "&userColors=" + dataQString.userColors +  "&showLastWeek=" + dataQString.showLastWeek + "&showTrend=N" + "&userStacking=" + dataQString.userStacking;
 					document.getElementById("showTrendButton").value = "Show trend";
 				}
 				window.location.replace(url);
@@ -402,11 +414,11 @@
 			}
 			if(serie=="todayTrend"){
 				if(document.getElementById("showTodayTrendButton").value == "Show today trend"){
-					url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend="+ dataQString.showTrend +  "&showLastWeek=" + dataQString.showLastWeek + "&index=" + document.getElementById("seriesLabel").selectedIndex + "&todayTrend=Y";
+					url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend="+ dataQString.showTrend +  "&showLastWeek=" + dataQString.showLastWeek + "&index=" + document.getElementById("seriesLabel").selectedIndex + "&todayTrend=Y"+ "&userStacking=" + dataQString.userStacking;
 					document.getElementById("showTodayTrendButton").value = "Hide today Trend";
 				}
 				else{
-					url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend="+ dataQString.showTrend +  "&showLastWeek=N" + "&index=" + document.getElementById("seriesLabel").selectedIndex ;
+					url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend="+ dataQString.showTrend +  "&showLastWeek=N" + "&index=" + document.getElementById("seriesLabel").selectedIndex + "&userStacking=" + dataQString.userStacking;
 					document.getElementById("showTodayTrendButton").value = "Show today Trend";
 				}
 				window.location.replace(url);
@@ -416,12 +428,12 @@
 				//trend(index);
 			
 				if(document.getElementById("showLastWeekButton").value == "Show last week line"){
-					url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend=" + dataQString.showTrend + "&userColors=" + dataQString.userColors + "&showLastWeek=Y"  + "&index=" + document.getElementById("seriesLabel").selectedIndex;
+					url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend=" + dataQString.showTrend + "&userColors=" + dataQString.userColors + "&showLastWeek=Y"  + "&index=" + document.getElementById("seriesLabel").selectedIndex + "&userStacking=" + dataQString.userStacking;
 					document.getElementById("showLastWeekButton").value = "Hide last week line";
 				}
 				else{
 					//url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.styleName +"&showPie=" + dataQString.showPie + "&showTrend=" + dataQString.showTrend + "&showLastWeek=N";
-					url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend=" + dataQString.showTrend  + "&index=" + dataQString.index + "&seriesTypes=" + dataQString.seriesTypes + "&userColors=" + dataQString.userColors +  "&showLastWeek=N";
+					url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend=" + dataQString.showTrend  + "&index=" + dataQString.index + "&seriesTypes=" + dataQString.seriesTypes + "&userColors=" + dataQString.userColors +  "&showLastWeek=N" + "&userStacking=" + dataQString.userStacking;
 					document.getElementById("showLastWeekButton").value = "Show last week line";
 				}
 				window.location.replace(url);
@@ -463,7 +475,7 @@
 			}
 			colorsString = colorsString.substring(1);
 			
-			url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend=" + dataQString.showTrend +  "&showLastWeek=" + dataQString.showLastWeek  + "&index=" + dataQString.index + "&seriesTypes=" + dataQString.seriesTypes + "&userColors=" + colorsString ;
+			url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend=" + dataQString.showTrend +  "&showLastWeek=" + dataQString.showLastWeek  + "&index=" + dataQString.index + "&seriesTypes=" + dataQString.seriesTypes + "&userColors=" + colorsString + "&userStacking=" + dataQString.userStacking;
 			window.location.replace(url);
 			
 		}
@@ -479,12 +491,27 @@
 				var pair = qsData[a].split ("=");
 				dataQString[pair[0]] = unescape(pair[1]);				
 			}
-			calculateTrend(0);
-			
-			url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend=" + dataQString.showTrend +  "&showLastWeek=" + dataQString.showLastWeek  + "&index=" + dataQString.index + "&userColors=" + dataQString.userColors + "&seriesTypes=" + type;
+						
+			url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend=" + dataQString.showTrend +  "&showLastWeek=" + dataQString.showLastWeek  + "&index=" + dataQString.index + "&userColors=" + dataQString.userColors + "&seriesTypes=" + type + "&userStacking=" + dataQString.userStacking;
 			window.location.replace(url);
 		}
 	</script>
+	
+	<script language="javascript">
+		function modifyStacking(definedStyle){
+			var urlBase = document.location.toString().split("?")[0]
+			var qsData = document.location.search.substring(1).split ("&");
+			var dataQString = {};
+				
+			for (var a = 0; a < qsData.length; a++) {
+				var pair = qsData[a].split ("=");
+				dataQString[pair[0]] = unescape(pair[1]);				
+			}			
+			url = urlBase + "?file=" + dataQString.file + "&theme=" + dataQString.theme +"&showPie=" + dataQString.showPie + "&showTrend=" + dataQString.showTrend +  "&showLastWeek=" + dataQString.showLastWeek  + "&index=" + dataQString.index + "&userColors=" + dataQString.userColors + "&seriesTypes=" + dataQString.seriesTypes + "&userStacking=" + definedStyle;
+			window.location.replace(url);
+		}
+	</script>
+	
 	<script language="javascript">
 		function changeLabelColour(){
 			var label = document.getElementById("colorsLabel");
@@ -508,7 +535,8 @@
 			else{
 				document.getElementById("plainDataTable").style.visibility='visible';
 				document.getElementById("dataTable").value = "Hide plain data";
-				drawData();
+				drawData(1);
+				apendMoreDataButton();
 				
 			}
 			
@@ -518,10 +546,13 @@
 	</script>
 	
 	<script language="javascript">
-		function drawData(){
+		function drawData(until){
+		
+			var periodicity = parseInt((24*60/data[0].data[0].length).toFixed(0));
+		
 			var table = document.getElementById("plainDataTable");
 			
-			if ( table.hasChildNodes() )	{
+			if ( table.hasChildNodes())	{
 				while ( table.childNodes.length >= 1 ){
 					table.removeChild( table.firstChild );       
 				} 
@@ -529,9 +560,101 @@
 			
 			var date = new Date();
 			
-			for(var i=0; i<data.length;i++){						
+			//Poner los titulos a las celdas
+			var headerRow = document.createElement('tr');
+			
+			var tdHeaderVariableName = document.createElement('input');
+			tdHeaderVariableName.align = "center";
+			tdHeaderVariableName.size = "25";
+			tdHeaderVariableName.value = "Variable";	
+			tdHeaderVariableName.style.backgroundColor="#87CEEB";
+			
+			var tdHeaderDay = document.createElement('input');
+			tdHeaderDay.align = "center";
+			tdHeaderDay.size = "25";
+			tdHeaderDay.value = "Day";	
+			tdHeaderDay.style.backgroundColor="#87CEEB";
+			
+			headerRow.appendChild(tdHeaderVariableName);
+			headerRow.appendChild(tdHeaderDay);
+			
+			for (var k=0; k<data[0].data[0].length; k++){	
+				
+				
+				var dayHour = Math.floor(k*periodicity/60);
+				var dayMinutes = Math.abs(((dayHour - k*periodicity/60)*60).toFixed(0));
+				var dayHourString = dayHour.toString()
+				var dayMinutesString = dayMinutes.toString()
+				if(dayHour<10){
+					dayHourString = "0" + dayHourString;
+				}
+				if(dayMinutes<10){
+					dayMinutesString = "0" + dayMinutesString;
+				}
+				
+				var tdHeaderHour = document.createElement('input');
+				//tdHeaderHour.type = "button";
+				tdHeaderHour.align = "center";
+				tdHeaderHour.size = "1";
+				tdHeaderHour.value = dayHourString + ":" + dayMinutesString;	
+				tdHeaderHour.style.backgroundColor="#87CEEB";
+				headerRow.appendChild(tdHeaderHour);
+				
+				if(k==data[0].data[0].length-1){
+					var tdHeaderTotal = document.createElement('input');
+					//tdHeaderTotal.type = "button";
+					tdHeaderTotal.align = "center";
+					tdHeaderTotal.size = "8";
+					tdHeaderTotal.style.backgroundColor="#87CEEB"
+					tdHeaderTotal.value = "TOTAL";	
+
+					var tdHeaderMax = document.createElement('input');
+					//tdHeaderMax.type = "button";
+					tdHeaderMax.align = "center";
+					tdHeaderMax.size = "8";
+					tdHeaderMax.style.backgroundColor="#87CEEB";
+					tdHeaderMax.value = "MAX";	
+
+					var tdHeaderMin = document.createElement('input');
+					//tdHeaderMin.type = "button";
+					tdHeaderMin.align = "center";
+					tdHeaderMin.size = "8";
+					tdHeaderMin.style.backgroundColor="#87CEEB";
+					tdHeaderMin.value = "MIN";	
+					
+					var tdHeaderAvg = document.createElement('input');
+					//tdHeaderAvg.type = "button";
+					tdHeaderAvg.align = "center";
+					tdHeaderAvg.size = "8";
+					tdHeaderAvg.style.backgroundColor="#87CEEB";
+					tdHeaderAvg.value = "AVG";
+					
+					headerRow.appendChild(tdHeaderTotal);
+					headerRow.appendChild(tdHeaderMax);
+					headerRow.appendChild(tdHeaderMin);
+					headerRow.appendChild(tdHeaderAvg);
+				}
+				
+			}
+			table.appendChild(headerRow);
+			//
+			
+			for(var i=0; i<data.length;i++){	
+				var separateVariablesRow = document.createElement('tr');
+				var separateInput = document.createElement('input');
+				var tdSeparateVariables = document.createElement('td');
+				
+				separateInput.align = "center";
+				separateInput.size = "800";
+				//separateInput.style.backgroundColor="#D3F5A9";
+				//separateInput.value = data[i].name;
+				tdSeparateVariables.appendChild(separateInput);
+				separateVariablesRow.appendChild(tdSeparateVariables);
+				table.appendChild(separateVariablesRow); 
+				
 				var weekDay = new Date();
-				for (var j=0; j<data[i].data.length; j++){	
+				//for (var j=0; j<data[i].data.length; j++){	
+				for (var j=0; j<until; j++){	
 					
 					weekDay.setDate(weekDay.getDate()-1);
 					
@@ -554,10 +677,17 @@
 							count +=1;
 						}
 						if(k==0){
+						
+							var tdInputVarName = document.createElement('input');
+							tdInputVarName.align = "center";
+							tdInputVarName.size = "25";
+							tdInputVarName.value = data[i].name;		
+							tableRow.appendChild(tdInputVarName);
+						
 							var tdInput = document.createElement('input');
 							tdInput.align = "center";
 							tdInput.size = "25";
-							tdInput.value = data[i].name + " Day " + weekDay.toString().substring(0,15);		
+							tdInput.value = weekDay.toString().substring(0,15);		
 							tableRow.appendChild(tdInput);
 						}
 						
@@ -574,22 +704,22 @@
 							var tdInputTotal = document.createElement('input');
 							tdInputTotal.align = "center";
 							tdInputTotal.size = "8";
-							tdInputTotal.value = "TOTAL: " + total;	
+							tdInputTotal.value = total;	
 
 							var tdInputMax = document.createElement('input');
 							tdInputMax.align = "center";
 							tdInputMax.size = "8";
-							tdInputMax.value = "MAX: " + max;	
+							tdInputMax.value = max;	
 
 							var tdInputMin = document.createElement('input');
 							tdInputMin.align = "center";
 							tdInputMin.size = "8";
-							tdInputMin.value = "MIN: " + min;	
+							tdInputMin.value = min;	
 							
 							var tdInputAvg = document.createElement('input');
 							tdInputAvg.align = "center";
 							tdInputAvg.size = "8";
-							tdInputAvg.value = "AVG: " + (avg/count).toFixed(2);
+							tdInputAvg.value =(avg/count).toFixed(2);
 							
 							tableRow.appendChild(tdInputTotal);
 							tableRow.appendChild(tdInputMax);
@@ -600,10 +730,47 @@
 					table.appendChild(tableRow);
 										
 				}
-						
-				
 					
 			}
+			if(until==1){
+				var seeMoreButton = document.createElement('input');
+				seeMoreButton.align = "center";
+				seeMoreButton.value = "See all week";
+				seeMoreButton.setAttribute("onClick", "drawData(7)");
+				seeMoreButton.type = "button";
+				table.appendChild(seeMoreButton);
+			}
+			else if (until<=7){
+				var hideWeekButton = document.createElement('input');
+				hideWeekButton.align = "center";
+				hideWeekButton.value = "Hide all week data";
+				hideWeekButton.setAttribute("onClick", "drawData(1)");
+				hideWeekButton.type = "button";
+				
+				var seeMonthButton = document.createElement('input');
+				seeMonthButton.align = "center";
+				seeMonthButton.value = "See all month";
+				seeMonthButton.setAttribute("onClick", "drawData(31)");
+				seeMonthButton.type = "button";
+				
+				table.appendChild(hideWeekButton);
+				table.appendChild(seeMonthButton);
+			}
+			else{
+				var hideMonthButton = document.createElement('input');
+				hideMonthButton.align = "center";
+				hideMonthButton.value = "Hide all month data";
+				hideMonthButton.setAttribute("onClick", "drawData(7)");
+				hideMonthButton.type = "button";
+				
+				table.appendChild(hideMonthButton);
+			}
+		}
+		
+	</script>
+	<script language="javascript">
+		function seeWeekData(){
+			alert("WEEK DATA");
 			
 		}
 	</script>

@@ -132,6 +132,15 @@ if(showLastWeek=="Y"){
 	series[i].data = lastWeekArray;	
 	i+=1;
 }
+
+var stackingStyle = stacking;
+
+if(userStacking=='normal'){
+	stackingStyle = 'normal';
+}
+else if(userStacking=='overlap'){
+	stackingStyle = '';
+}
 	
 var chart;
 					
@@ -168,7 +177,7 @@ var chart;
 							},
 							plotOptions: {
 								area:{
-									stacking: stacking,
+									stacking: stackingStyle,
 									marker: {
 										enabled: false,
 										symbol: 'circle',
