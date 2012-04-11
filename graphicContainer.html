@@ -198,7 +198,7 @@
 	</table>
 	
 	
-	<table align="center" id="plainDataTable" border="1" cellspacing="0" cellpadding="0" width="750%" style="visibility: hidden">
+	<table align="center" id="plainDataTable" border="1" cellspacing="0" cellpadding="0" width="50%" style="visibility: hidden">
 	</table>
 	
 	<script language="javascript">
@@ -547,10 +547,13 @@
 	
 	<script language="javascript">
 		function drawData(until){
-		
 			var periodicity = parseInt((24*60/data[0].data[0].length).toFixed(0));
-		
+			
 			var table = document.getElementById("plainDataTable");
+			table.border = "7";			
+			table.width = 60*data[0].data[0].length;
+			
+			var tb = document.createElement("tbody")  
 			
 			if ( table.hasChildNodes())	{
 				while ( table.childNodes.length >= 1 ){
@@ -558,29 +561,22 @@
 				} 
 			}
 			
-			var date = new Date();
-			
-			//Poner los titulos a las celdas
 			var headerRow = document.createElement('tr');
 			
-			var tdHeaderVariableName = document.createElement('input');
-			tdHeaderVariableName.align = "center";
-			tdHeaderVariableName.size = "25";
-			tdHeaderVariableName.value = "Variable";	
-			tdHeaderVariableName.style.backgroundColor="#87CEEB";
-			
-			var tdHeaderDay = document.createElement('input');
-			tdHeaderDay.align = "center";
-			tdHeaderDay.size = "25";
-			tdHeaderDay.value = "Day";	
-			tdHeaderDay.style.backgroundColor="#87CEEB";
-			
-			headerRow.appendChild(tdHeaderVariableName);
-			headerRow.appendChild(tdHeaderDay);
-			
-			for (var k=0; k<data[0].data[0].length; k++){	
+			var tdVariableName = document.createElement("td");
+			tdVariableName.bgColor = "#87CEEB"
+			tdVariableName.appendChild(document.createTextNode("Variable Name"));
 				
-				
+			var tdDay = document.createElement("td");
+			tdDay.bgColor = "#87CEEB"
+			tdDay.appendChild(document.createTextNode("Day"));
+			
+			headerRow.appendChild(tdVariableName);
+			headerRow.appendChild(tdDay);
+			
+			//Agrego los headers de cada hora
+			for (var k=0; k<data[0].data[0].length; k++){
+							
 				var dayHour = Math.floor(k*periodicity/60);
 				var dayMinutes = Math.abs(((dayHour - k*periodicity/60)*60).toFixed(0));
 				var dayHourString = dayHour.toString()
@@ -592,153 +588,140 @@
 					dayMinutesString = "0" + dayMinutesString;
 				}
 				
-				var tdHeaderHour = document.createElement('input');
-				//tdHeaderHour.type = "button";
-				tdHeaderHour.align = "center";
-				tdHeaderHour.size = "1";
-				tdHeaderHour.value = dayHourString + ":" + dayMinutesString;	
-				tdHeaderHour.style.backgroundColor="#87CEEB";
+				var tdHeaderHour = document.createElement('td');
+				tdHeaderHour.bgColor = "#87CEEB"
+				tdHeaderHour.appendChild(document.createTextNode(dayHourString + ":" + dayMinutesString));				
 				headerRow.appendChild(tdHeaderHour);
 				
-				if(k==data[0].data[0].length-1){
-					var tdHeaderTotal = document.createElement('input');
-					//tdHeaderTotal.type = "button";
-					tdHeaderTotal.align = "center";
-					tdHeaderTotal.size = "8";
-					tdHeaderTotal.style.backgroundColor="#87CEEB"
-					tdHeaderTotal.value = "TOTAL";	
-
-					var tdHeaderMax = document.createElement('input');
-					//tdHeaderMax.type = "button";
-					tdHeaderMax.align = "center";
-					tdHeaderMax.size = "8";
-					tdHeaderMax.style.backgroundColor="#87CEEB";
-					tdHeaderMax.value = "MAX";	
-
-					var tdHeaderMin = document.createElement('input');
-					//tdHeaderMin.type = "button";
-					tdHeaderMin.align = "center";
-					tdHeaderMin.size = "8";
-					tdHeaderMin.style.backgroundColor="#87CEEB";
-					tdHeaderMin.value = "MIN";	
-					
-					var tdHeaderAvg = document.createElement('input');
-					//tdHeaderAvg.type = "button";
-					tdHeaderAvg.align = "center";
-					tdHeaderAvg.size = "8";
-					tdHeaderAvg.style.backgroundColor="#87CEEB";
-					tdHeaderAvg.value = "AVG";
-					
-					headerRow.appendChild(tdHeaderTotal);
-					headerRow.appendChild(tdHeaderMax);
-					headerRow.appendChild(tdHeaderMin);
-					headerRow.appendChild(tdHeaderAvg);
-				}
-				
 			}
-			table.appendChild(headerRow);
-			//
 			
-			for(var i=0; i<data.length;i++){	
-				var separateVariablesRow = document.createElement('tr');
-				var separateInput = document.createElement('input');
-				var tdSeparateVariables = document.createElement('td');
+			//Agrego los headers para el total, maximo, minimo, promedio
+			var tdHeaderTotal = document.createElement('td');
+			tdHeaderTotal.bgColor = "#87CEEB"
+			tdHeaderTotal.appendChild(document.createTextNode("TOTAL"));
+
+			var tdHeaderMax = document.createElement('td');
+			tdHeaderMax.bgColor = "#87CEEB"
+			tdHeaderMax.appendChild(document.createTextNode("MAX"));	
+
+			var tdHeaderMin = document.createElement('td');
+			tdHeaderMin.bgColor = "#87CEEB"			
+			tdHeaderMin.appendChild(document.createTextNode("MIN"));
+					
+			var tdHeaderAvg = document.createElement('td');
+			tdHeaderAvg.bgColor = "#87CEEB"	
+			tdHeaderAvg.appendChild(document.createTextNode("AVG"));
+					
+			headerRow.appendChild(tdHeaderTotal);
+			headerRow.appendChild(tdHeaderMax);
+			headerRow.appendChild(tdHeaderMin);
+			headerRow.appendChild(tdHeaderAvg);
+			
+			//Agrego la fila con los títulos al tbody
+			
+			tb.appendChild(headerRow);
+			
+			//Empiezo a meter las observaciones de cada variable, de cada día, de cada hora del día
+			
+			for(var i=0; i<data.length;i++){		
+				//Primero agrego una fila que separe entre las distintas variables, así es más legible
+				var separateVariablesRow1 = document.createElement('tr');
 				
-				separateInput.align = "center";
-				separateInput.size = "800";
-				//separateInput.style.backgroundColor="#D3F5A9";
-				//separateInput.value = data[i].name;
-				tdSeparateVariables.appendChild(separateInput);
-				separateVariablesRow.appendChild(tdSeparateVariables);
-				table.appendChild(separateVariablesRow); 
+				var tdSeparateVariables1 = document.createElement('td');
+				tdSeparateVariables1.bgColor = "000000";
+				tdSeparateVariables1.height = 10;
 				
+				separateVariablesRow1.appendChild(tdSeparateVariables1);
+				tb.appendChild(separateVariablesRow1); 				
+				
+				//////////
+			
 				var weekDay = new Date();
-				//for (var j=0; j<data[i].data.length; j++){	
-				for (var j=0; j<until; j++){	
-					
-					weekDay.setDate(weekDay.getDate()-1);
-					
+				for (var j=0; j<until; j++){
+					weekDay.setDate(weekDay.getDate()-1);					
 					var tableRow = document.createElement('tr');
-					var total = 0
+					
+					var total = 0;
 					var max = data[i].data[j][0];
 					var min = data[i].data[j][0];
 					var avg = 0;
 					var count = 0;
-					for (var k=0; k<data[i].data[j].length; k++){					
-					//for (var k=0; k<15; k++){
+					
+					//Primero agrego el nombre de la variable y el día
+					var tdVarName = document.createElement('td');
+					tdVarName.bgColor = "#F7F2E0"
+					tdVarName.appendChild(document.createTextNode(data[i].name));
+						
+					var tdDay = document.createElement('td');
+					tdDay.bgColor = "#F7F2E0"
+					tdDay.appendChild(document.createTextNode(weekDay.toString().substring(0,15)));
+							
+					tableRow.appendChild(tdVarName);
+					tableRow.appendChild(tdDay);
+					///////////////////////////////////////////////////////////
+					
+					for (var k=0; k<data[i].data[j].length; k++){	
 						if(typeof(data[i].data[j][k])=="number"){
 							if(data[i].data[j][k]>max){
 								max = data[i].data[j][k];
 							}
+							if(typeof(min)!="number"){
+								min = max;
+							}
+							
 							if(data[i].data[j][k]<min){
 								min = data[i].data[j][k];
 							}
 							avg +=data[i].data[j][k];
 							count +=1;
-						}
-						if(k==0){
-						
-							var tdInputVarName = document.createElement('input');
-							tdInputVarName.align = "center";
-							tdInputVarName.size = "25";
-							tdInputVarName.value = data[i].name;		
-							tableRow.appendChild(tdInputVarName);
-						
-							var tdInput = document.createElement('input');
-							tdInput.align = "center";
-							tdInput.size = "25";
-							tdInput.value = weekDay.toString().substring(0,15);		
-							tableRow.appendChild(tdInput);
+							
+							total += data[i].data[j][k];
 						}
 						
-						var tdInput = document.createElement('input');
-						tdInput.align = "center";
-						tdInput.size = "1";
-						tdInput.value = data[i].data[j][k];	
-						total += data[i].data[j][k];
-				
-						tableRow.appendChild(tdInput);
+						var tdVariableValue = document.createElement('td');
+						tdVariableValue.appendChild(document.createTextNode(data[i].data[j][k]));
+						tdVariableValue.bgColor = "#F7F2E0"
 						
-						if(k==data[i].data[j].length-1){
-							
-							var tdInputTotal = document.createElement('input');
-							tdInputTotal.align = "center";
-							tdInputTotal.size = "8";
-							tdInputTotal.value = total;	
-
-							var tdInputMax = document.createElement('input');
-							tdInputMax.align = "center";
-							tdInputMax.size = "8";
-							tdInputMax.value = max;	
-
-							var tdInputMin = document.createElement('input');
-							tdInputMin.align = "center";
-							tdInputMin.size = "8";
-							tdInputMin.value = min;	
-							
-							var tdInputAvg = document.createElement('input');
-							tdInputAvg.align = "center";
-							tdInputAvg.size = "8";
-							tdInputAvg.value =(avg/count).toFixed(2);
-							
-							tableRow.appendChild(tdInputTotal);
-							tableRow.appendChild(tdInputMax);
-							tableRow.appendChild(tdInputMin);
-							tableRow.appendChild(tdInputAvg);
-						}
+						tableRow.appendChild(tdVariableValue);
+						
 					}
-					table.appendChild(tableRow);
-										
-				}
 					
+					//Agrego a la fila el total, max, min, etc
+					var tdTotal = document.createElement('td');
+					tdTotal.bgColor = "#F7F2E0"
+					tdTotal.appendChild(document.createTextNode(total));
+
+					var tdMax = document.createElement('td');
+					tdMax.bgColor = "#F7F2E0"
+					tdMax.appendChild(document.createTextNode(max));
+							
+					var tdMin = document.createElement('td');
+					tdMin.bgColor = "#F7F2E0"
+					tdMin.appendChild(document.createTextNode(min));
+						
+					var tdAvg = document.createElement('td');
+					tdAvg.bgColor = "#F7F2E0"
+					tdAvg.appendChild(document.createTextNode((avg/count).toFixed(2)));
+					
+					tableRow.appendChild(tdTotal);
+					tableRow.appendChild(tdMax);
+					tableRow.appendChild(tdMin);
+					tableRow.appendChild(tdAvg);	
+					//////////////////////////////////
+					
+					tb.appendChild(tableRow);
+					
+				}
+				
 			}
+			
 			if(until==1){
 				var seeMoreButton = document.createElement('input');
 				seeMoreButton.align = "center";
 				seeMoreButton.value = "See all week";
 				seeMoreButton.setAttribute("onClick", "drawData(7)");
 				seeMoreButton.type = "button";
-				table.appendChild(seeMoreButton);
+				tb.appendChild(seeMoreButton);
 			}
 			else if (until<=7){
 				var hideWeekButton = document.createElement('input');
@@ -753,8 +736,8 @@
 				seeMonthButton.setAttribute("onClick", "drawData(31)");
 				seeMonthButton.type = "button";
 				
-				table.appendChild(hideWeekButton);
-				table.appendChild(seeMonthButton);
+				tb.appendChild(hideWeekButton);
+				tb.appendChild(seeMonthButton);
 			}
 			else{
 				var hideMonthButton = document.createElement('input');
@@ -763,14 +746,12 @@
 				hideMonthButton.setAttribute("onClick", "drawData(7)");
 				hideMonthButton.type = "button";
 				
-				table.appendChild(hideMonthButton);
+				tb.appendChild(hideMonthButton);
 			}
-		}
-		
-	</script>
-	<script language="javascript">
-		function seeWeekData(){
-			alert("WEEK DATA");
+			
+			//Agrego el tbody a la tabla
+			
+			table.appendChild(tb);
 			
 		}
 	</script>
