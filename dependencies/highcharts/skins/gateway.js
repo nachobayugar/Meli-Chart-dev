@@ -10,13 +10,7 @@ Highcharts.theme = {
 		borderWidth: 1,
 		plotShadow: false,
 		plotBackgroundImage: './dependencies/highcharts/skins/gateway.jpg',
-		backgroundColor: {
-			linearGradient: [0, 0, 250, 500],
-			stops: [
-				[0, 'rgb(255, 255, 255, 0)'],
-				[1, 'rgb(255, 255, 255, 1)']
-			]
-		},
+		backgroundColor: '#E6EFF7',
 		plotBackgroundColor: null,
 		plotBorderWidth: 1
 	},

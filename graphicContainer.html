@@ -35,6 +35,7 @@
 		var s = document.createElement('script');	
 		s.type = 'text/javascript';	
 		s.src =  "./projects/" + dataQString.file + ".js";
+		//s.src =  dataQString.file + ".js";
 		
 		var current = document.createElement('script');	
 		current.type = 'text/javascript';	
@@ -192,7 +193,7 @@
 			<input type="button" value="Weekly comparisson"  onClick="showWeekSummary('weekly_comparisson')"></input>
 		</td>
 		<td align="center">
-			<input type="button" id = "dataTable" value="Show plain data"  onClick="generatePlainData('plainData')"></input>
+			<input type="button" id = "dataTable" value="Table data"  onClick="generatePlainData()"></input>
 		</td>
 	</tr>
 	</table>
@@ -525,6 +526,21 @@
 	</script>
 	
 	<script language="javascript">
+		function generatePlainData()
+		{
+			var qsData = document.location.search.substring(1).split ("&");
+				var dataQString = {};
+				
+				for (var a = 0; a < qsData.length; a++) {
+					var pair = qsData[a].split ("=");
+					dataQString[pair[0]] = unescape(pair[1]) + ".js";
+			}
+			
+			window.open("tableData.html?file=" + dataQString.file);
+			return;
+		}
+	</script>
+<!--	<script language="javascript">
 		function generatePlainData(fileToShow)
 		{
 			var show = document.getElementById("dataTable").value;
@@ -676,11 +692,17 @@
 							count +=1;
 							
 							total += data[i].data[j][k];
+							
+							var tdVariableValue = document.createElement('td');
+							tdVariableValue.appendChild(document.createTextNode(data[i].data[j][k]));
+							tdVariableValue.bgColor = "#F7F2E0"
+						}
+						else{
+							var tdVariableValue = document.createElement('td');
+							tdVariableValue.appendChild(document.createTextNode("N/D"));
+							tdVariableValue.bgColor = "#F7F2E0"
 						}
 						
-						var tdVariableValue = document.createElement('td');
-						tdVariableValue.appendChild(document.createTextNode(data[i].data[j][k]));
-						tdVariableValue.bgColor = "#F7F2E0"
 						
 						tableRow.appendChild(tdVariableValue);
 						
@@ -755,6 +777,8 @@
 			
 		}
 	</script>
+	
+	-->
 </body>
 </html>
 

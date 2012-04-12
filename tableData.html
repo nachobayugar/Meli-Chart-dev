@@ -1,0 +1,296 @@
+<html> 
+<head> 
+	<link rel="StyleSheet" href="./oat/styles/pivot.css" type="text/css">
+	<script type="text/javascript"> 
+	var featureList = ["pivot","statistics"]; 
+	</script> 
+	
+	<script type="text/javascript"> 
+		var datos = new Array();
+		var originalData = new Array();
+		var groupedByHour = 'N';
+		var groupedByWeek = 'N';
+		var cabecera = new Array('Variable name', 'Day', 'Day time', 'Quantity');
+	</script> 
+	
+	<script type="text/javascript" src="./oat/loader.js"></script> 
+
+</head>
+<body>
+	<script type='text/javascript' id = "generalSettings">
+				
+		var qsData = document.location.search.substring(1).split ("&");
+		var dataQString = {};
+		
+		for (var a = 0; a < qsData.length; a++) {
+			var pair = qsData[a].split ("=");
+			dataQString[pair[0]] = unescape(pair[1]);
+			
+		}
+		
+		var s = document.createElement('script');	
+		s.type = 'text/javascript';	
+		s.src =  "./projects/" + dataQString.file;
+		
+		
+		var tableLoader = document.createElement('script');	
+		tableLoader.type = 'text/javascript';	
+		tableLoader.src =  "tableLoader.js";
+		
+		document.getElementsByTagName("head")[0].appendChild(s);
+		document.getElementsByTagName("head")[0].appendChild(tableLoader);
+		
+	</script>
+	
+	<div id="filtros"></div>
+	<div id="tabla"></div>
+	
+	<input type="button" id ="groupByHourButton" value = "Group by Hour" onClick = "groupByHour()">	</input>
+	<input type="button" id ="groupByWeekButton" value = "Group by week" onClick = "groupByWeek()">	</input>
+	
+	<script type='text/javascript'>
+	function groupByHour() {
+		var periodicity = parseInt((24*60/data[0].data[0].length).toFixed(0));
+		
+		if(document.getElementById("groupByHourButton").value=="Ungroup hours"){
+			datos = originalData;
+			var pTable = new OAT.Pivot('tabla', '', 'filtros', cabecera, datos,	[0], [2], [1,2], 3, null);
+			pTable.go();	
+			
+			document.getElementById("groupByHourButton").value="Group by Hour";	
+			groupedByHour = 'N';
+		}
+		else{
+			
+			var hourArray = ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','24:00']
+			var groupedData = new Array();
+			var groupedDataIndex = 0
+			
+			for(var i=0; i<data.length; i++){
+				var weekDay = new Date();
+			
+				for (var j=0; j<data[i].data.length; j++){
+				
+					//Seteo el día 
+					weekDay.setDate(weekDay.getDate()-1);
+					var day = weekDay.toString().substring(0,15);
+					var hourArrayPosition = 0;
+					for(var k=0; k<data[i].data[j].length; k++){
+						
+						var groupingRate = 60/periodicity;
+						var hourTotal = 0;
+						for(var l=0; l<groupingRate; l++){
+							hourTotal +=data[i].data[j][k];
+							k+=1;
+							
+						}
+						hourArrayPosition +=1;
+						k-=1;	
+						groupedData[groupedDataIndex] = new Array(data[i].name, day, hourArray[hourArrayPosition-1], hourTotal);
+						groupedDataIndex +=1;
+
+						
+					}
+				}
+			}
+			
+			datos = groupedData;
+			groupedByHour = 'Y';
+			
+			var pTable = new OAT.Pivot('tabla', '', 'filtros', cabecera, datos,	[0], [2], [1,2], 3, null);
+			pTable.go();
+			
+			document.getElementById("groupByHourButton").value="Ungroup hours";
+		}
+	}
+	</script>
+	
+	<script type='text/javascript'>
+	function groupByWeek() {
+		
+		var periodicity = parseInt((24*60/data[0].data[0].length).toFixed(0));
+	
+		if(document.getElementById("groupByWeekButton").value=="Ungroup weeks"){
+			var pTable = new OAT.Pivot('tabla', '', 'filtros', cabecera, datos,	[0], [2], [1,2], 3, null);
+			pTable.go();	
+			
+			document.getElementById("groupByWeekButton").value="Group by week";	
+			groupedByWeek = 'N'
+		}
+		else{
+			
+			if(groupedByHour == 'N'){
+				var groupedByWeekIndex = 0;
+				var groupedByWeekData = new Array();
+				for(var i=0; i<data.length; i++){
+					
+					for(var k=0; k<data[i].data[0].length; k++){
+						var weekSumm = 0;
+						for (var j=0; j<7; j++){
+							weekSumm += data[i].data[j][k];
+						}
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "0 weeks ago", k, weekSumm);
+						groupedByWeekIndex +=1;
+					}
+					
+					for(var k=0; k<data[i].data[0].length; k++){
+						var weekSumm = 0;
+						for (var j=7; j<14; j++){
+							weekSumm += data[i].data[j][k];
+						}
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "1 weeks ago", k, weekSumm);
+						groupedByWeekIndex +=1;
+					}
+					for(var k=0; k<data[i].data[0].length; k++){
+						var weekSumm = 0;
+						for (var j=14; j<21; j++){
+							weekSumm += data[i].data[j][k];
+						}
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "2 weeks ago", k, weekSumm);
+						groupedByWeekIndex +=1;
+					}
+					for(var k=0; k<data[i].data[0].length; k++){
+						var weekSumm = 0;
+						for (var j=21; j<28; j++){
+							weekSumm += data[i].data[j][k];
+						}
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "2 weeks ago", k, weekSumm);
+						groupedByWeekIndex +=1;
+					}
+					for(var k=0; k<data[i].data[0].length; k++){
+						var weekSumm = 0;
+						for (var j=28; j<35; j++){
+							weekSumm += data[i].data[j][k];
+						}
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "4 weeks ago", k, weekSumm);
+						groupedByWeekIndex +=1;
+					}
+				}
+				datos = groupedByWeekData;
+				
+			}
+			else{
+				var groupedByWeekIndex = 0;
+				var groupedByWeekData = new Array();
+				var groupingRate = 60/periodicity;
+				var hourArray = ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','24:00']
+				
+				for(var i=0; i<data.length; i++){
+					
+					var hourArrayPosition = 0;
+					for(var k=0; k<data[i].data[0].length; k++){
+						var hourTotal = 0;
+						var weekSumm = 0;
+						
+						for (var j=0; j<7; j++){											
+							for(var l=0; l<groupingRate; l++){
+								hourTotal +=data[i].data[j][k];
+								k+=1;							
+							}		
+							hourArrayPosition +=1;
+							k-=1;							
+							weekSumm += hourTotal;
+								
+							groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "0 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
+							groupedByWeekIndex +=1;
+						}
+						
+					}
+					
+					hourArrayPosition = 0;
+					for(var k=0; k<data[i].data[0].length; k++){
+						var hourTotal = 0;
+						var weekSumm = 0;
+						
+						for (var j=7; j<14; j++){
+						
+							for(var l=0; l<groupingRate; l++){
+								hourTotal +=data[i].data[j][k];
+								k+=1;							
+							}
+							hourArrayPosition +=1;
+							k-=1;	
+							
+							weekSumm += hourTotal;
+							
+							groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "1 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
+							groupedByWeekIndex +=1;
+						}
+						
+					}
+					
+					hourArrayPosition = 0;
+					for(var k=0; k<data[i].data[0].length; k++){
+						
+						var hourTotal = 0;
+						var weekSumm = 0;
+						
+						for (var j=14; j<21; j++){
+							
+							for(var l=0; l<groupingRate; l++){
+								hourTotal +=data[i].data[j][k];
+								k+=1;							
+							}
+							hourArrayPosition +=1;
+							k-=1;	
+							
+							weekSumm += hourTotal;
+							
+							groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "2 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
+							groupedByWeekIndex +=1;
+						}
+						
+					}
+					
+					hourArrayPosition = 0;
+					for(var k=0; k<data[i].data[0].length; k++){
+						var hourTotal = 0;
+						var weekSumm = 0;
+						
+						for (var j=21; j<28; j++){
+							for(var l=0; l<groupingRate; l++){
+								hourTotal +=data[i].data[j][k];
+								k+=1;							
+							}
+							hourArrayPosition +=1;
+							k-=1;								
+						
+							weekSumm += hourTotal;
+							
+							groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "3 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
+							groupedByWeekIndex +=1;
+						}
+						
+					}
+					
+					hourArrayPosition = 0;
+					for(var k=0; k<data[i].data[0].length; k++){
+						var hourTotal = 0;
+						var weekSumm = 0;
+						for (var j=28; j<35; j++){
+							for(var l=0; l<groupingRate; l++){
+								hourTotal +=data[i].data[j][k];
+								k+=1;							
+							}	
+							hourArrayPosition +=1;
+							k-=1;													
+							weekSumm += hourTotal;
+							
+							groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "4 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
+							groupedByWeekIndex +=1;
+						}
+						
+					}
+				}
+				datos = groupedByWeekData;
+			}
+			
+			var pTable = new OAT.Pivot('tabla', '', 'filtros', cabecera, datos,	[0,1], [2], [2], 3, null);
+			pTable.go();
+			document.getElementById("groupByWeekButton").value="Ungroup weeks";
+		}
+	}
+	</script>
+	
+</body> 
+</html>
