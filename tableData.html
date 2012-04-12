@@ -53,11 +53,13 @@
 		var periodicity = parseInt((24*60/data[0].data[0].length).toFixed(0));
 		
 		if(document.getElementById("groupByHourButton").value=="Ungroup hours"){
+			
 			datos = originalData;
 			var pTable = new OAT.Pivot('tabla', '', 'filtros', cabecera, datos,	[0], [2], [1,2], 3, null);
 			pTable.go();	
 			
 			document.getElementById("groupByHourButton").value="Group by Hour";	
+			document.getElementById("groupByWeekButton").value="Group by week";	
 			groupedByHour = 'N';
 		}
 		else{
@@ -72,8 +74,19 @@
 				for (var j=0; j<data[i].data.length; j++){
 				
 					//Seteo el día 
-					weekDay.setDate(weekDay.getDate()-1);
-					var day = weekDay.toString().substring(0,15);
+					if(j>0){
+						weekDay.setDate(weekDay.getDate()-1);
+					}
+					//var day = weekDay.toString().substring(0,15);
+					var stringMonth = weekDay.getMonth() + 1;
+					var stringDay = weekDay.getDate();
+					if(weekDay.getMonth() < 10){
+						stringMonth = "0" + stringMonth
+					}
+					if(weekDay.getDate() < 10){
+						stringDay = "0" + stringDay
+					}
+					var day = stringMonth + "-" + stringDay + " (" + weekDay.toString().substring(0,15) + ")";
 					var hourArrayPosition = 0;
 					for(var k=0; k<data[i].data[j].length; k++){
 						
@@ -101,6 +114,7 @@
 			pTable.go();
 			
 			document.getElementById("groupByHourButton").value="Ungroup hours";
+			document.getElementById("groupByWeekButton").value="Group by week";
 		}
 	}
 	</script>
@@ -111,6 +125,7 @@
 		var periodicity = parseInt((24*60/data[0].data[0].length).toFixed(0));
 	
 		if(document.getElementById("groupByWeekButton").value=="Ungroup weeks"){
+			datos = originalData;
 			var pTable = new OAT.Pivot('tabla', '', 'filtros', cabecera, datos,	[0], [2], [1,2], 3, null);
 			pTable.go();	
 			
@@ -125,44 +140,108 @@
 				for(var i=0; i<data.length; i++){
 					
 					for(var k=0; k<data[i].data[0].length; k++){
+					
+						var dayHour = Math.floor(k*periodicity/60);
+						var dayMinutes = Math.abs(((dayHour - k*periodicity/60)*60).toFixed(0));
+						var dayHourString = dayHour.toString()
+						var dayMinutesString = dayMinutes.toString()
+						if(dayHour<10){
+							dayHourString = "0" + dayHourString;
+						}
+						if(dayMinutes<10){
+							dayMinutesString = "0" + dayMinutesString;
+						}
+						var dayTime = dayHourString + ":" + dayMinutesString;
+					
 						var weekSumm = 0;
 						for (var j=0; j<7; j++){
 							weekSumm += data[i].data[j][k];
 						}
-						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "0 weeks ago", k, weekSumm);
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "0 weeks ago", dayTime, weekSumm);
 						groupedByWeekIndex +=1;
 					}
 					
 					for(var k=0; k<data[i].data[0].length; k++){
+						
+						var dayHour = Math.floor(k*periodicity/60);
+						var dayMinutes = Math.abs(((dayHour - k*periodicity/60)*60).toFixed(0));
+						var dayHourString = dayHour.toString()
+						var dayMinutesString = dayMinutes.toString()
+						if(dayHour<10){
+							dayHourString = "0" + dayHourString;
+						}
+						if(dayMinutes<10){
+							dayMinutesString = "0" + dayMinutesString;
+						}
+						var dayTime = dayHourString + ":" + dayMinutesString;
+
 						var weekSumm = 0;
 						for (var j=7; j<14; j++){
 							weekSumm += data[i].data[j][k];
 						}
-						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "1 weeks ago", k, weekSumm);
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "1 weeks ago", dayTime, weekSumm);
 						groupedByWeekIndex +=1;
 					}
 					for(var k=0; k<data[i].data[0].length; k++){
+			
+						var dayHour = Math.floor(k*periodicity/60);
+						var dayMinutes = Math.abs(((dayHour - k*periodicity/60)*60).toFixed(0));
+						var dayHourString = dayHour.toString()
+						var dayMinutesString = dayMinutes.toString()
+						if(dayHour<10){
+							dayHourString = "0" + dayHourString;
+						}
+						if(dayMinutes<10){
+							dayMinutesString = "0" + dayMinutesString;
+						}
+						var dayTime = dayHourString + ":" + dayMinutesString;
+					
 						var weekSumm = 0;
 						for (var j=14; j<21; j++){
 							weekSumm += data[i].data[j][k];
 						}
-						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "2 weeks ago", k, weekSumm);
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "2 weeks ago", dayTime, weekSumm);
 						groupedByWeekIndex +=1;
 					}
 					for(var k=0; k<data[i].data[0].length; k++){
+
+						var dayHour = Math.floor(k*periodicity/60);
+						var dayMinutes = Math.abs(((dayHour - k*periodicity/60)*60).toFixed(0));
+						var dayHourString = dayHour.toString()
+						var dayMinutesString = dayMinutes.toString()
+						if(dayHour<10){
+							dayHourString = "0" + dayHourString;
+						}
+						if(dayMinutes<10){
+							dayMinutesString = "0" + dayMinutesString;
+						}
+						var dayTime = dayHourString + ":" + dayMinutesString;
+					
 						var weekSumm = 0;
 						for (var j=21; j<28; j++){
 							weekSumm += data[i].data[j][k];
 						}
-						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "2 weeks ago", k, weekSumm);
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "3 weeks ago", dayTime, weekSumm);
 						groupedByWeekIndex +=1;
 					}
 					for(var k=0; k<data[i].data[0].length; k++){
+						var dayHour = Math.floor(k*periodicity/60);
+						var dayMinutes = Math.abs(((dayHour - k*periodicity/60)*60).toFixed(0));
+						var dayHourString = dayHour.toString()
+						var dayMinutesString = dayMinutes.toString()
+						if(dayHour<10){
+							dayHourString = "0" + dayHourString;
+						}
+						if(dayMinutes<10){
+							dayMinutesString = "0" + dayMinutesString;
+						}
+						var dayTime = dayHourString + ":" + dayMinutesString;
+
 						var weekSumm = 0;
 						for (var j=28; j<35; j++){
 							weekSumm += data[i].data[j][k];
 						}
-						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "4 weeks ago", k, weekSumm);
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "4 weeks ago", dayTime, weekSumm);
 						groupedByWeekIndex +=1;
 					}
 				}
@@ -177,111 +256,118 @@
 				
 				for(var i=0; i<data.length; i++){
 					
-					var hourArrayPosition = 0;
+					var hourArrayPosition = 1;
+											
 					for(var k=0; k<data[i].data[0].length; k++){
-						var hourTotal = 0;
+						
 						var weekSumm = 0;
 						
-						for (var j=0; j<7; j++){											
-							for(var l=0; l<groupingRate; l++){
-								hourTotal +=data[i].data[j][k];
-								k+=1;							
-							}		
-							hourArrayPosition +=1;
-							k-=1;							
+						for (var j=0; j<7; j++){
+							var hourTotal = 0;
+							
+							for(var l=k; l<k+groupingRate; l++){
+								hourTotal +=data[i].data[j][l];								
+							}
+														
 							weekSumm += hourTotal;
 								
-							groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "0 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
-							groupedByWeekIndex +=1;
 						}
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "0 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
+						groupedByWeekIndex +=1;
 						
+						hourArrayPosition +=1;
+						k+=groupingRate-1;
 					}
 					
-					hourArrayPosition = 0;
+					hourArrayPosition = 1;
 					for(var k=0; k<data[i].data[0].length; k++){
-						var hourTotal = 0;
+						
 						var weekSumm = 0;
 						
 						for (var j=7; j<14; j++){
-						
-							for(var l=0; l<groupingRate; l++){
-								hourTotal +=data[i].data[j][k];
-								k+=1;							
+							var hourTotal = 0;
+							
+							for(var l=k; l<k+groupingRate; l++){
+								hourTotal +=data[i].data[j][l];								
 							}
-							hourArrayPosition +=1;
-							k-=1;	
-							
+														
 							weekSumm += hourTotal;
-							
-							groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "1 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
-							groupedByWeekIndex +=1;
+								
 						}
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "1 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
+						groupedByWeekIndex +=1;
 						
+						hourArrayPosition +=1;
+						k+=groupingRate-1;
 					}
 					
-					hourArrayPosition = 0;
+					hourArrayPosition = 1;
 					for(var k=0; k<data[i].data[0].length; k++){
 						
-						var hourTotal = 0;
 						var weekSumm = 0;
 						
 						for (var j=14; j<21; j++){
+							var hourTotal = 0;
 							
-							for(var l=0; l<groupingRate; l++){
-								hourTotal +=data[i].data[j][k];
-								k+=1;							
+							for(var l=k; l<k+groupingRate; l++){
+								hourTotal +=data[i].data[j][l];								
 							}
-							hourArrayPosition +=1;
-							k-=1;	
-							
+														
 							weekSumm += hourTotal;
-							
-							groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "2 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
-							groupedByWeekIndex +=1;
+								
 						}
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "2 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
+						groupedByWeekIndex +=1;
 						
+						hourArrayPosition +=1;
+						k+=groupingRate-1;
 					}
 					
-					hourArrayPosition = 0;
+					hourArrayPosition = 1;
 					for(var k=0; k<data[i].data[0].length; k++){
-						var hourTotal = 0;
+						
 						var weekSumm = 0;
 						
 						for (var j=21; j<28; j++){
-							for(var l=0; l<groupingRate; l++){
-								hourTotal +=data[i].data[j][k];
-								k+=1;							
-							}
-							hourArrayPosition +=1;
-							k-=1;								
-						
-							weekSumm += hourTotal;
+							var hourTotal = 0;
 							
-							groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "3 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
-							groupedByWeekIndex +=1;
+							for(var l=k; l<k+groupingRate; l++){
+								hourTotal +=data[i].data[j][l];								
+							}
+														
+							weekSumm += hourTotal;
+								
 						}
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "3 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
+						groupedByWeekIndex +=1;
 						
+						hourArrayPosition +=1;
+						k+=groupingRate-1;
 					}
 					
-					hourArrayPosition = 0;
+					hourArrayPosition = 1;
 					for(var k=0; k<data[i].data[0].length; k++){
-						var hourTotal = 0;
-						var weekSumm = 0;
-						for (var j=28; j<35; j++){
-							for(var l=0; l<groupingRate; l++){
-								hourTotal +=data[i].data[j][k];
-								k+=1;							
-							}	
-							hourArrayPosition +=1;
-							k-=1;													
-							weekSumm += hourTotal;
-							
-							groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "4 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
-							groupedByWeekIndex +=1;
-						}
 						
+						var weekSumm = 0;
+						
+						for (var j=28; j<35; j++){
+							var hourTotal = 0;
+							
+							for(var l=k; l<k+groupingRate; l++){
+								hourTotal +=data[i].data[j][l];								
+							}
+														
+							weekSumm += hourTotal;
+								
+						}
+						groupedByWeekData[groupedByWeekIndex] = new Array(data[i].name, "4 weeks ago",  hourArray[hourArrayPosition-1], weekSumm);
+						groupedByWeekIndex +=1;
+						
+						hourArrayPosition +=1;
+						k+=groupingRate-1;
 					}
 				}
+				
 				datos = groupedByWeekData;
 			}
 			

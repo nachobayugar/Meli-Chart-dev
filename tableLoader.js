@@ -12,14 +12,6 @@ var loadTime = setInterval(function(){
 	clearInterval(loadTime);
 	isready = true;
 	
-	var cabecera = new Array('Variable name', 'Day', 'Day time', 'Quantity');
-	
-	var datos = new Array();
-	var originalData = new Array();
-	
-	var groupedByHour = 'N';
-	var groupedByWeek = 'N';
-	
 	var index = 0;
 	
 	var periodicity = parseInt((24*60/data[0].data[0].length).toFixed(0));
@@ -30,9 +22,19 @@ var loadTime = setInterval(function(){
 		for (var j=0; j<data[i].data.length; j++){
 		
 			//Seteo el día 
-			weekDay.setDate(weekDay.getDate()-1);
-			var day = weekDay.toString().substring(0,15);
-		
+			if(j>0){
+				weekDay.setDate(weekDay.getDate()-1);
+			}
+			//var day = weekDay.toString().substring(0,15);
+			var stringMonth = weekDay.getMonth() + 1;
+			var stringDay = weekDay.getDate();
+			if(weekDay.getMonth() < 10){
+				stringMonth = "0" + stringMonth
+			}
+			if(weekDay.getDate() < 10){
+				stringDay = "0" + stringDay
+			}
+			var day = stringMonth + "-" + stringDay + " (" + weekDay.toString().substring(0,15) + ")";
 			for(var k=0; k<data[i].data[j].length; k++){
 					//Seteo la hora del día
 					var dayHour = Math.floor(k*periodicity/60);
@@ -48,9 +50,16 @@ var loadTime = setInterval(function(){
 					var dayTime = dayHourString + ":" + dayMinutesString;
 					///////
 					
+					if(typeof(data[i].data[j][k])=="number"){
+						datos[index] = new Array(data[i].name, day, dayTime, data[i].data[j][k]);
+						originalData[index] = new Array(data[i].name, day, dayTime, data[i].data[j][k]);
+					}
+					else{
+						datos[index] = new Array(data[i].name, day, dayTime, '');
+						originalData[index] = new Array(data[i].name, day, dayTime, '');
+					}
 					
-					datos[index] = new Array(data[i].name, day, dayTime, data[i].data[j][k]);
-					originalData[index] = new Array(data[i].name, day, dayTime, data[i].data[j][k]);
+					
 					index +=1;
 			}
 		}
@@ -81,12 +90,5 @@ var loadTime = setInterval(function(){
 
 			pTable.go();
 		}*/
-
-		
-		
-
-
-
-
 
 },100);
