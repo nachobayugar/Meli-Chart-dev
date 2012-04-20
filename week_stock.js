@@ -18,16 +18,15 @@ var stock_tiempo = setInterval(function(){
 	
 	var seriesStock = new Array();
 	var dateStock = new Date()
-	dateStock.setDate(dateStock.getDate()-6);
+	dateStock.setDate(dateStock.getDate()-30);
 	
 	var time = dateStock.getTime();
-	
+		
 	var hours = dateStock.getHours()*60*60*1000;
 	var minutes = dateStock.getMinutes()*60*1000;
 
 	time = time - hours - minutes - 60*60*1000 - 60*60*1000;
 	
-
 	var x = (24*60/data[0].data[0].length).toFixed(0);
 	
 		for(var i=0; i<data.length; i++){
@@ -37,6 +36,7 @@ var stock_tiempo = setInterval(function(){
 			seriesStock[i].name = data[i].name; //data[i].name;
 			
 			for(var j=30; j>=0; j--){
+				//Calculo el startPoint, que me dice en realidad, a qué hora termina el gráfico de hoy. Si j!=0, el startPoint es el final del día
 				var startPoint = data[i].data[j].length-1;
 				if(j==0){					
 					for (var k=data[i].data[j].length-1 ; k>=0; k--){

@@ -14,7 +14,7 @@
 	</script> 
 	
 	<script type="text/javascript" src="./dependencies/oat/loader.js"></script> 
-
+	
 </head>
 <body>
 	<script type='text/javascript' id = "generalSettings">
@@ -44,7 +44,7 @@
 	
 	<div id="filtros"></div>
 	<div id="tabla"></div>
-	
+	<input type="button" id ="loadTableButton" value = "Load original table" onClick = "loadOriginalData()">	</input>
 	<input type="button" id ="groupByHourButton" value = "Group by Hour" onClick = "groupByHour()">	</input>
 	<input type="button" id ="groupByWeekButton" value = "Group by week" onClick = "groupByWeek()">	</input>
 	
@@ -377,6 +377,17 @@
 		}
 	}
 	</script>
-	
+	<script type='text/javascript'>
+		function loadOriginalData(){
+			datos = originalData;
+			var pTable = new OAT.Pivot('tabla', '', 'filtros', cabecera, datos,	[0], [2], [1,2], 3, null);
+			pTable.go();	
+			
+			document.getElementById("groupByWeekButton").value="Group by week";	
+			document.getElementById("groupByHourButton").value="Group by hour";	
+			groupedByWeek = 'N'
+			groupedByHour = 'N'
+		}
+	</script>
 </body> 
 </html>
